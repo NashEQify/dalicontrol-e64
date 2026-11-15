@@ -1,0 +1,36 @@
+recall_scene:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: dalicontrol_e64
+    scene:
+      required: true
+      selector:
+        number:
+          min: 0
+          max: 15
+          mode: box
+all_off:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: dalicontrol_e64
+all_on:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: dalicontrol_e64
+set_levels:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: dalicontrol_e64
+    levels:
+      required: true
+      example: '{"1": 255, "2": 128, "3": 0}'
+      selector:
+        object:

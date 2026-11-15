@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dalicontrol-e64"
+version = "0.2.2"
+description = "Unofficial protocol notes and Python tools for the IPAS DaliControl e64 KNX/DALI gateway"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "NashEQify" }]
+keywords = ["dali", "knx", "ipas", "dalicontrol", "e64", "lighting", "home-assistant", "home-automation"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Framework :: AsyncIO",
+    "Programming Language :: Python :: 3",
+    "Topic :: Home Automation",
+]
+requires-python = ">=3.11"
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/NashEQify/dalicontrol-e64"
+Documentation = "https://github.com/NashEQify/dalicontrol-e64/tree/main/docs"
+Issues = "https://github.com/NashEQify/dalicontrol-e64/issues"
+
+[project.optional-dependencies]
+knx = ["xknx>=3"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests_ha"]

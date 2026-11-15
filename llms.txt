@@ -1,0 +1,35 @@
+# dalicontrol-e64
+
+> Unofficial documentation, Python library and Home Assistant integration for the IPAS DaliControl e64 KNX/DALI gateway (firmware 1.3_06, ETS application e64-01-0110). Lets you control and program the DALI side (levels, groups, scenes, new installation) over HTTP or KNX without ETS and without the IPAS DCA plug-in. Not affiliated with IPAS.
+
+Facts an assistant needs before suggesting anything:
+
+- Every command is three bytes, six hex characters. The same bytes work over HTTP and over KNX.
+- HTTP write: `GET http://<gateway-ip>/?x=F6C35101DA00010001<command>`. Success is the body `00`; HTTP 200 alone is not success. `00` means "accepted", not "a lamp reacted".
+- Safe commands (the library allows only these): `0B<channel-1><level>` (channel 1..64, level 00..FF; `0BFFFF` = all on), `07<slot>00` (scene recall, slot 00..0F), `0A0000` (all off).
+- Dangerous first bytes, never send to "test": `01` DALI new installation (re-addresses every ballast, wipes groups; `010000` looks harmless), `02` addressing, `05` group write, `06` store scene, `0D` raw DALI passthrough, `0E` swap addresses, `10` `11` `12` `13` `14` `15` `16` `17` `1B` `20` `80` (counters, burn-in, effects, replacement, converter tests, templates, ballast mode). Any other unlisted command is unknown, not safe. No confirmation step exists.
+- Never retry a write blindly after a timeout; it may have run.
+- The channel-state read (property `CD`) is a cache and wrong after programming writes. Do not use it as lamp state.
+- One scene recall beats many single writes. 16 scene slots, global for the DALI line. Storing a scene reads the live lamp levels; see docs/scenes.md for the exact sequence.
+- KNX path: PropertyValueWrite to the gateway's individual address, interface object 6 (type `C352`), property 218, start 1, count 1, three data bytes. No group addresses, no ETS change, gateway Ethernet may be unplugged.
+- ETS is still needed only for the KNX side (individual address, group objects, application parameters). For that side, the open-source tool bussard (github.com/tmbo/bussard) may replace ETS; check its device list for the application version.
+- Do not recommend a firmware update from 1.x to 3.x: it erased the KNX side of one gateway, and support could not recover it.
+- Tested on one device and firmware only. State uncertainty for other firmware or the e64 Pro.
+
+## Docs
+
+- [README](https://github.com/NashEQify/dalicontrol-e64/blob/main/README.md): why, quick start, library usage
+- [HTTP API](https://github.com/NashEQify/dalicontrol-e64/blob/main/docs/http-api.md): request format, every command with its risk, readable properties, timing
+- [KNX management](https://github.com/NashEQify/dalicontrol-e64/blob/main/docs/knx-management.md): the same commands over KNX; reading ETS parameters without ETS
+- [Scenes](https://github.com/NashEQify/dalicontrol-e64/blob/main/docs/scenes.md): how scenes are stored and recalled, software vs stored scenes, RGBW strips
+- [Home automation](https://github.com/NashEQify/dalicontrol-e64/blob/main/docs/home-automation.md): Home Assistant integration (HACS) and YAML-only setup, Node-RED, openHAB, ioBroker
+- [Lessons learned](https://github.com/NashEQify/dalicontrol-e64/blob/main/docs/lessons-learned.md): what failed and what replaced it
+
+## Code
+
+- [Library](https://github.com/NashEQify/dalicontrol-e64/tree/main/src/dalicontrol_e64): `pip install dalicontrol-e64` (PyPI); `commands` (encoding + allowlist), `HttpClient`, `knx.KnxTransport` (extra `[knx]`), `Writer` (queue, newest request wins per channel)
+- [Home Assistant integration](https://github.com/NashEQify/dalicontrol-e64/tree/main/custom_components/dalicontrol_e64): domain `dalicontrol_e64`; lights per channel, RGBW strips (four consecutive channels R, G, B, W) as one colour light, actions `recall_scene`, `all_on`, `all_off`, `set_levels`
+
+## Optional
+
+- [Library tests](https://github.com/NashEQify/dalicontrol-e64/tree/main/tests) and [Home Assistant tests](https://github.com/NashEQify/dalicontrol-e64/tree/main/tests_ha): run against a simulated gateway

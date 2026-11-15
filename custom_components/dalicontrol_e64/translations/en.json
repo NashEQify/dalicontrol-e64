@@ -1,0 +1,114 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "DaliControl e64",
+        "description": "How does Home Assistant reach the gateway?",
+        "menu_options": {
+          "http": "HTTP (gateway IP address)",
+          "knx": "KNX (uses the existing KNX integration)"
+        }
+      },
+      "http": {
+        "data": {
+          "host": "IP address",
+          "channels": "Channels",
+          "rgbw_strips": "RGBW strips"
+        },
+        "data_description": {
+          "channels": "DALI channels to create lights for, e.g. 1-12, 15, 20-23",
+          "rgbw_strips": "First channel of each RGBW strip (four channels R, G, B, W), e.g. 14, 20. Each strip becomes one colour light. Leave empty if there are none."
+        }
+      },
+      "knx": {
+        "data": {
+          "knx_address": "Individual address of the gateway",
+          "channels": "Channels",
+          "rgbw_strips": "RGBW strips"
+        },
+        "data_description": {
+          "knx_address": "For example 1.1.2. No group addresses are needed.",
+          "channels": "DALI channels to create lights for, e.g. 1-12, 15, 20-23",
+          "rgbw_strips": "First channel of each RGBW strip (four channels R, G, B, W), e.g. 14, 20. Each strip becomes one colour light. Leave empty if there are none."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "The gateway did not answer a read-only request.",
+      "invalid_channels": "Use channels 1..64, separated by commas, ranges with a dash.",
+      "invalid_address": "An individual address looks like 1.1.2.",
+      "invalid_strips": "Give the first channel of each strip; all four channels must be in the channel list and strips must not overlap."
+    },
+    "abort": {
+      "already_configured": "This gateway is already configured.",
+      "knx_not_set_up": "Set up the Home Assistant KNX integration first."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "channels": "Channels",
+          "rgbw_strips": "RGBW strips"
+        },
+        "data_description": {
+          "rgbw_strips": "First channel of each RGBW strip (four channels R, G, B, W), e.g. 14, 20. Each strip becomes one colour light. Leave empty if there are none."
+        }
+      }
+    },
+    "error": {
+      "invalid_channels": "Use channels 1..64, separated by commas, ranges with a dash.",
+      "invalid_strips": "Give the first channel of each strip; all four channels must be in the channel list and strips must not overlap."
+    }
+  },
+  "services": {
+    "recall_scene": {
+      "name": "Recall scene",
+      "description": "Recalls a DALI scene slot stored in the gateway. One bus command; channel writes still waiting in the queue are dropped.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Gateway",
+          "description": "Only needed with more than one gateway."
+        },
+        "scene": {
+          "name": "Scene slot",
+          "description": "0..15"
+        }
+      }
+    },
+    "all_off": {
+      "name": "All off",
+      "description": "Switches every lamp on the DALI line off with one broadcast.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Gateway",
+          "description": "Only needed with more than one gateway."
+        }
+      }
+    },
+    "all_on": {
+      "name": "All on",
+      "description": "Sets every lamp on the DALI line to 100 % with one broadcast.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Gateway",
+          "description": "Only needed with more than one gateway."
+        }
+      }
+    },
+    "set_levels": {
+      "name": "Set levels",
+      "description": "Sets several channels in one queued request (a software scene).",
+      "fields": {
+        "config_entry_id": {
+          "name": "Gateway",
+          "description": "Only needed with more than one gateway."
+        },
+        "levels": {
+          "name": "Levels",
+          "description": "Channel to level 0..255"
+        }
+      }
+    }
+  }
+}

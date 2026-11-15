@@ -1,0 +1,13 @@
+{
+  "domain": "dalicontrol_e64",
+  "name": "DaliControl e64",
+  "after_dependencies": ["knx"],
+  "codeowners": ["@NashEQify"],
+  "config_flow": true,
+  "documentation": "https://github.com/NashEQify/dalicontrol-e64/blob/main/docs/home-automation.md",
+  "integration_type": "hub",
+  "iot_class": "assumed_state",
+  "issue_tracker": "https://github.com/NashEQify/dalicontrol-e64/issues",
+  "requirements": ["dalicontrol-e64==0.2.2"],
+  "version": "0.2.2"
+}
